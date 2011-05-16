@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+{% block title %} - {{section}}{% endblock %}
+
+{% block sidebar %}{% endlblock %}
+{% block content %}
+{% trans "Course List of the school" %}
+<ul>
+{% for course in courses %}
+    <li><a href="#">{{ couse.name }}</a> - 
+    <span class="descr">{{course.description}}</span> - 
+    <a href="#">{{course.blog}}</a> <a href="#">{{course.rss}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
