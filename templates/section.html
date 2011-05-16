@@ -2,14 +2,23 @@
 
 {% block title %} - {{section}}{% endblock %}
 
+{% block style %}
+.descr{
+    text-align:justify;
+}
+{% endlblock %}
+
 {% block sidebar %}{% endlblock %}
 {% block content %}
 {% trans "Course List of the school" %}
-<ul>
+<table width="600px">
 {% for course in courses %}
-    <li><a href="#">{{ couse.name }}</a> - 
-    <span class="descr">{{course.description}}</span> - 
-    <a href="#">{{course.blog}}</a> <a href="#">{{course.rss}}</a></li>
+    <tr>
+        <td width="100px"><a href="#">{{ couse.name }}</a></td> 
+        <td width="400px"><span class="descr">{{course.description}}</span></td>
+        <td width="75px"><a href="#">{{course.blog}}</a></td>
+        <td width="25px"><a href="#">{{course.rss}}</a></td>
+    </tr>
 {% endfor %}
-</ul>
+</table>
 {% endblock %}

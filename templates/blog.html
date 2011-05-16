@@ -1,1 +1,39 @@
-empty file.
+{% extends "index.html" %}
+
+{% block title %} - {{section}}{% endblock %}
+
+{% block style %}
+.descr{
+    text-align:justify;
+}
+{% endlblock %}
+
+{% block sidebar %}{% endlblock %}
+{% block content %}
+{% trans "Course List of the school" %}
+<div id="posts">
+{% for post in posts %}
+<div class="post" id="post-id">
+    <span class="post-title"></span>
+    <div class="post-content"></div>
+    <div class="post-data">
+        <span class="post-author"></span>
+        <span class="post-time"></span>
+        <span class="post-permalink"></span>
+        <span class="post-tags"></span>
+    </div>
+    <div class="post-attachments"></div>
+    <div class="post-comments"
+    {% for comment in post.comments %}
+        <div class="comment" id="post-id-comment-id">
+            <div class="comment-author"></div>
+            <div class="comment-content"></div>
+            <span class="comment-time"></span>
+            <span class="comment-permalink"></span>
+        </div>
+    {% endfor %}    
+    </div>
+</div>    
+{% endfor %}
+</div>
+{% endblock %}
