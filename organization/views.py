@@ -15,7 +15,7 @@ def view_year(request, year):
 		'url':str(s.url()),
 		'description':s.description
 	} for s in y.sections.all()]
-	return render_to_response('section.html', {'':''})
+	return render_to_response('year.html', {'':''})
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
@@ -39,7 +39,7 @@ def view_course(request, year, section, course):
 		'students':k.students.all().count(),
 		'teachers':k.teachers.all().count(),
 	} for k in c.klasses.all()]
-	return render_to_response('section.html', {'':''})
+	return render_to_response('course.html', {'':''})
 
 	
 	
@@ -64,4 +64,4 @@ def view_klass(request, year,section, course, klass):
 			#'url':str(q.url()),
 			} )
 
-	return render_to_response('section.html', {'':''})
+	return render_to_response('class.html', {'':''})
