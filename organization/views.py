@@ -1,6 +1,7 @@
 # Create your views here.
 from django.http import HttpResponse
 from organization.models import *
+from django.shortcuts import render_to_response
 
 try:
 	import json
@@ -14,7 +15,7 @@ def view_year(request, year):
 		'url':str(s.url()),
 		'description':s.description
 	} for s in y.sections.all()]
-	return HttpResponse(json.dumps(res))
+	return render_to_response('section.html', {'':''})
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
@@ -24,7 +25,7 @@ def view_section(request, year, section):
 		'url':str(c.url()),
 		'description':c.description
 	} for c in s.courses.all()]
-	return HttpResponse(json.dumps(res))
+	return render_to_response('section.html', {'':''})
 
 
 
@@ -38,7 +39,7 @@ def view_course(request, year, section, course):
 		'students':k.students.all().count(),
 		'teachers':k.teachers.all().count(),
 	} for k in c.klasses.all()]
-	return HttpResponse(json.dumps(res))
+	return render_to_response('section.html', {'':''})
 
 	
 	
@@ -63,4 +64,4 @@ def view_klass(request, year,section, course, klass):
 			#'url':str(q.url()),
 			} )
 
-	return HttpResponse(json.dumps(res))
+	return render_to_response('section.html', {'':''})
