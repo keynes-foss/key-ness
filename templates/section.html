@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% load i18n %}
-{% block title %} - {{year}}{% endblock %}
+{% block title %} - {{section}}{% endblock %}
 
 {% block style %}
 .descr{
@@ -12,10 +12,10 @@
 {% block content %}
 {% trans "Areas of the school" %}
 <table width="600px">
-{% for section in sections %}
+{% for course in courses %}
     <tr>
-        <td width="100px"><a href="{{ section.url }}">{{ section.name }}</a></td> 
-        <td width="400px"><span class="descr">{{section.description}}</span></td>
+        <td width="100px"><a href="{{ course.url }}">{{ course.course }}</a></td> 
+        <td width="400px"><span class="descr">{{course.description}}</span></td>
         <td width="75px"><a href="#">{{course.blog}}</a></td>
         <td width="25px"><a href="#">{{course.rss}}</a></td>
     </tr>

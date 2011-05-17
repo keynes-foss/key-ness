@@ -25,7 +25,7 @@ def view_section(request, year, section):
 		'url':str(c.url()),
 		'description':c.description
 	} for c in s.courses.all()]
-	return render_to_response('section.html', {'courses':res, 'section':section})
+	return render_to_response('section.html', {'courses':res, 'section':s.name})
 
 
 
