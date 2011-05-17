@@ -1,35 +1,49 @@
 {% load i18n %}
 <html>
-<head>
-<title>ISI Keynes {% block title %}{% endblock %}</title>
-<style type="text/css">
-#title{
-    width:100%;
-    height:250px;
-    margin-left:250px;
-    font-size:60px;
-    }
-#content{
-    width:800px;
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:0;
-    }
-#footer{
-    width:100%;
-    height:250px;
-    }
-    
-{% block style %}{% endblock %}
-</style>
-</head>
-<body>
-    <div id="title">ISI Keynes</div>
-    <div id="breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
-    <div id="content">
-        <div id="sidebar">{% block sidebar %}{% endblock %}</div>
-        <div id="main">{% block content %}{% endblock %}</div>
-    </div>
-    <div id="footer">Made with <a href="https://github.com/keynes-foss/key-ness">keynes-foss:key-ness</a></div>
-</body>
+        <head>
+                <title>ISI Keynes {% block title %}{% endblock %}</title>
+                <style type="text/css">
+                        #title{
+                                width:100%;
+                                height:250px;
+                        }
+                        .title-text{
+                                left:250px;
+                                font-size:60px;
+                        }
+                        #content{
+                                width:800px;
+                                margin-left:auto;
+                                margin-right:auto;
+                                margin-top:0;
+                        }
+                        #footer{
+                                width:100%;
+                                height:250px;
+                        }
+
+                        #sidebar{
+                                width:200px;
+                                display:block;
+                                float:left;
+                        }
+                        #main{
+                                width:5950px;
+                                display:block;
+                                float:right;
+                        }
+
+
+                        {% block style %}{% endblock %}
+                </style>
+        </head>
+        <body>
+                <div id="title"><span class="title-text">ISI Keynes</span></div>
+                <div id="breadcrumbs">{% for breadcrumb in breadcrumbs %}<span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>{% endfor %}</div>
+                <div id="content">
+                        <div id="sidebar"></div>
+                        <div id="main">{% block content %}{% endblock %}</div>
+                </div>
+                <div id="footer">Made with <a href="https://github.com/keynes-foss/key-ness">keynes-foss:key-ness</a></div>
+        </body>
 </html>
