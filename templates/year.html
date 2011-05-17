@@ -4,20 +4,20 @@
 
 {% block style %}
 .descr{
-    text-align:justify;
+text-align:justify;
 }
 {% endblock %}
 
 {% block content %}
 {% trans "Course List of the school" %}
-<table width="600px">
-{% for section in sections %}
-    <tr>
-        <td width="100px"><a href="{{ section.url }}">{{ section.section }}</a></td> 
-        <td width="400px"><span class="descr">{{section.description}}</span></td>
-        <td width="75px"><a href="#">{{course.blog}}</a></td>
-        <td width="25px"><a href="#">{{course.rss}}</a></td>
-    </tr>
-{% endfor %}
+<table>
+        {% for section in sections %}
+        <tr>
+                <td width="200px"><a href="{{ section.url }}">{{ section.section }}</a></td>
+                <td width="300px"><span class="descr">{{section.description}}</span></td>
+                <td width="75px"><a href="#">{{course.blog}}</a></td>
+                <td width="20px"><a href="#">{{course.rss}}</a></td>
+        </tr>
+        {% endfor %}
 </table>
 {% endblock %}
