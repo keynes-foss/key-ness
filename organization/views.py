@@ -53,8 +53,7 @@ def view_course(request, year, section, course):
 		'students':k.students.all().count(),
 		'teachers':k.teachers.all().count(),
 	} for k in c.klasses.all()]
-    print res
-	return render_to_response('course.html', {'course':course, "klasses":res})
+    return render_to_response('course.html', {'course':course, "klasses":res})
 
 
 
