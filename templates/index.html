@@ -47,10 +47,13 @@
                         {% for breadcrumb in breadcrumbs %}
                         <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
                         {% if not forloop.last %} > {% endif %}
-                        {% endfor %}</div>
+                        {% endfor %}
+                </div>
                 <div id="content">
                         <div id="sidebar"></div>
-                        <div id="main">{% block content %}{% endblock %}</div>
+                        <div id="main">
+                                {% block content %}{% endblock %}
+                        </div>
                 </div>
                 <div id="footer">Made with <a href="https://github.com/keynes-foss/key-ness">keynes-foss:key-ness</a></div>
         </body>
