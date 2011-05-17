@@ -47,12 +47,7 @@ def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
-	res = [{
-		"klass":str(k),
-		'url':str(k.url()),
-		'students':k.students.all().count(),
-		'teachers':k.teachers.all().count(),
-	    } for k in c.klasses.all()]
+	res = [{ "klass":str(k), 'url':str(k.url()), 'students':k.students.all().count(), 'teachers':k.teachers.all().count(), } for k in c.klasses.all()]
         
     return render_to_response('course.html', {'course':c.name, "klasses":res})
 
