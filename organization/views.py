@@ -7,12 +7,6 @@ try:
 except:
 	import simplejson as json
 
-
-
-
-
-
-
 def view_year(request, year):
 	y = Year.objects.get(name = year)
 	res = [{
@@ -20,13 +14,13 @@ def view_year(request, year):
 		'url':str(s.url()),
 		'description':s.description
 	} for s in y.sections.all()]
-	return render_to_response('year.html', {'sections':res, 'year':{"name":y.name, "url":str(y.url())}})
-
-
-
-
-
-
+	return render_to_response('year.html', {
+                'sections':res,
+                'breadcrumbs':[{
+                        "name":y.name,
+                        "url":str(y.url())
+                }]
+        })
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
@@ -36,25 +30,35 @@ def view_section(request, year, section):
 		'url':str(c.url()),
 		'description':c.description
 	} for c in s.courses.all()]
-	return render_to_response('section.html', {'courses':res, 'section':{"name":s.name,"url":str(s.url())}, 'year':{"name":y.name, "url":str(y.url())}})
-
-
-
-
-
+	return render_to_response('section.html', {
+                'courses':res,
+                'breadcrumbs':[{
+                        "name":y.name,
+                        "url":str(y.url())
+                },{
+                        "name":s.name,
+                        "url":str(s.url())
+                }]
+        })
 
 def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
 	res = [{ "klass":str(k), 'url':str(k.url()), 'students':k.students.all().count(), 'teachers':k.teachers.all().count(), } for k in c.klasses.all()]
-        return render_to_response('course.html', {'course':{"name":c.name, "url":str(c.url())}, "klasses":res, 'section':{"name":s.name,"url":str(s.url())}, 'year':{"name":y.name, "url":str(y.url())}})
-
-
-
-	
-	
-	
+        return render_to_response('course.html', {
+                "klasses":res,
+                'breadcrumbs':[{
+                        "name":y.name,
+                        "url":str(y.url())
+                },{
+                        "name":s.name,
+                        "url":str(s.url())
+                },{
+                        "name":c.name,
+                        "url":str(c.url())
+                }]
+        })
 
 def view_klass(request, year,section, course, klass):
 	y = Year.objects.get(name = year)
@@ -75,4 +79,17 @@ def view_klass(request, year,section, course, klass):
 			#'url':str(q.url()),
 			} )
 
-	return render_to_response('class.html', {'course':c.name, 'section':s.name, 'year':year})
+	return render_to_response('class.html', {
+                'breadcrumbs':[{
+                        "name":y.name,
+                        "url":str(y.url())
+                },{
+                        "name":s.name,
+                        "url":str(s.url())
+                },{
+                        "name":c.name,
+                        "url":str(c.url())
+                },{
+                        "name":k.name,
+                        "url":str(k.url())
+                }]})
