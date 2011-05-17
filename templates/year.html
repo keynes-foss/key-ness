@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% load i18n %}
-{% block title %} - {{year}}{% endblock %}
+{% block title %} - {{title}}{% endblock %}
 
 {% block style %}
 .descr{
@@ -11,12 +11,12 @@ text-align:justify;
 {% block content %}
 {% trans "Course List of the school" %}
 <table>
-        {% for section in sections %}
+        {% for el in content %}
         <tr>
-                <td width="200px"><a href="{{ section.url }}">{{ section.section }}</a></td>
-                <td width="300px"><span class="descr">{{section.description}}</span></td>
-                <td width="75px"><a href="#">{{course.blog}}</a></td>
-                <td width="20px"><a href="#">{{course.rss}}</a></td>
+                <td width="200px"><a href="{{ el.url }}">{{ el.name }}</a></td>
+                <td width="300px"><span class="descr">{{el.description}}</span></td>
+                <td width="75px"><a href="#">{{el.blog}}</a></td>
+                <td width="20px"><a href="#">{{el.rss}}</a></td>
         </tr>
         {% endfor %}
 
