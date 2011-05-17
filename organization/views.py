@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from organization.models import *
 from django.shortcuts import render_to_response
-
+from django.utils.translation import ugettext as _
 try:
 	import json
 except:
@@ -10,44 +10,48 @@ except:
 def view_year(request, year):
 	y = Year.objects.get(name = year)
 	res = [{
-		"section":str(s),
+		"name":str(s),
 		'url':str(s.url()),
 		'description':s.description
 	} for s in y.sections.all()]
 	return render_to_response('year.html', {
-                'sections':res,
+                'content':res,
                 'breadcrumbs':[{
                         "name":y.name,
                         "url":str(y.url())
-                }]
+                }],
+                'title':y.name,
+                "message":_("School sections available:")
         })
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	res = [{
-		"course":str(c),
+		"name":str(c),
 		'url':str(c.url()),
 		'description':c.description
 	} for c in s.courses.all()]
-	return render_to_response('section.html', {
-                'courses':res,
+	return render_to_response('year.html', {
+                'content':res,
                 'breadcrumbs':[{
                         "name":y.name,
                         "url":str(y.url())
                 },{
                         "name":s.name,
                         "url":str(s.url())
-                }]
+                }],
+                'title':s.name,
+                "message":_("Courses available in school Section:")
         })
 
 def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
-	res = [{ "klass":str(k), 'url':str(k.url()), 'students':k.students.all().count(), 'teachers':k.teachers.all().count(), } for k in c.klasses.all()]
+	res = [{ "name":str(k), 'url':str(k.url()), 'students':k.students.all().count(), 'teachers':k.teachers.all().count(), } for k in c.klasses.all()]
         return render_to_response('course.html', {
-                "klasses":res,
+                "content":res,
                 'breadcrumbs':[{
                         "name":y.name,
                         "url":str(y.url())
@@ -57,7 +61,9 @@ def view_course(request, year, section, course):
                 },{
                         "name":c.name,
                         "url":str(c.url())
-                }]
+                }],
+                'title':c.name,
+                "message":_("Course info available:")
         })
 
 def view_klass(request, year,section, course, klass):
@@ -92,4 +98,7 @@ def view_klass(request, year,section, course, klass):
                 },{
                         "name":k.name,
                         "url":str(k.url())
-                }]})
+                }],
+                'title':k.name,
+                "message":_("Class info available:")
+        })
