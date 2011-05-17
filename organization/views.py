@@ -1,4 +1,3 @@
-
 from django.http import HttpResponse
 from organization.models import *
 from django.shortcuts import render_to_response
@@ -8,6 +7,12 @@ try:
 except:
 	import simplejson as json
 
+
+
+
+
+
+
 def view_year(request, year):
 	y = Year.objects.get(name = year)
 	res = [{
@@ -16,6 +21,12 @@ def view_year(request, year):
 		'description':s.description
 	} for s in y.sections.all()]
 	return render_to_response('year.html', {'sections':res, 'year':year})
+
+
+
+
+
+
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
@@ -29,6 +40,9 @@ def view_section(request, year, section):
 
 
 
+
+
+
 def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
@@ -39,7 +53,9 @@ def view_course(request, year, section, course):
 		'students':k.students.all().count(),
 		'teachers':k.teachers.all().count(),
 	} for k in c.klasses.all()]
-	return render_to_response('course.html', {'':''})
+	return render_to_response('course.html', {'course':course, "klasses":res})
+
+
 
 	
 	
