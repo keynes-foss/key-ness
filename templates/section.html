@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
-{% block breadcrumbs %}<span class="breadcrumb">{{year}}</span> > <span class="breadcrumb">{{section}}</span>{% endblock %}
+{% block breadcrumbs %}<span class="breadcrumb"><a href="{{year.url}}">{{year.name}}</a></span> > <span class="breadcrumb"><a href="{{section.url}}">{{section.name}}</a></span>{% endblock %}
 {% block content %}
 {% trans "Areas of the school" %}
 <table width="600px">
