@@ -39,7 +39,11 @@
         </head>
         <body>
                 <div id="title"><span class="title-text">ISI Keynes</span></div>
-                <div id="breadcrumbs">{% for breadcrumb in breadcrumbs %}<span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>{% endfor %}</div>
+                <div id="breadcrumbs">
+                        {% for breadcrumb in breadcrumbs %}
+                        <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
+                        {% if not forloop.last %} > {% endif %}
+                        {% endfor %}</div>
                 <div id="content">
                         <div id="sidebar"></div>
                         <div id="main">{% block content %}{% endblock %}</div>
