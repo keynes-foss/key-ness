@@ -15,7 +15,7 @@ def view_year(request, year):
 		'url':str(s.url()),
 		'description':s.description
 	} for s in y.sections.all()]
-	return render_to_response('year.html', {'':''})
+	return render_to_response('year.html', {'sections':res, 'year':year})
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
