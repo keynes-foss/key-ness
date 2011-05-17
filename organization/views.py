@@ -1,4 +1,4 @@
-# Create your views here.
+
 from django.http import HttpResponse
 from organization.models import *
 from django.shortcuts import render_to_response
@@ -25,7 +25,7 @@ def view_section(request, year, section):
 		'url':str(c.url()),
 		'description':c.description
 	} for c in s.courses.all()]
-	return render_to_response('section.html', {'':''})
+	return render_to_response('section.html', {'courses':res, 'section':section})
 
 
 
