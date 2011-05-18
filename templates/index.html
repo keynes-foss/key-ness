@@ -52,16 +52,23 @@
                             margin-bottom:4px;
                             height:25px;
                         }
+                        #breadcrumbs-container{
+                            margin-left:auto;
+                            margin-right:auto;
+                            width:800px;
+                        }
                         {% block style %}{% endblock %}
                 </style>
         </head>
         <body>
                 <div id="title"><span class="title-text">ISI Keynes</span></div>
                 <div id="breadcrumbs">
-                        {% for breadcrumb in breadcrumbs %}
-                        <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
-                        {% if not forloop.last %} > {% endif %}
-                        {% endfor %}
+                        <div id="breadcrumbs-container">
+                                {% for breadcrumb in breadcrumbs %}
+                                <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
+                                {% if not forloop.last %} > {% endif %}
+                                {% endfor %}
+                        </div>
                 </div>
                 <div id="content">
                         <div id="sidebar">{% block sidebar %}{% endblock %}</div>
