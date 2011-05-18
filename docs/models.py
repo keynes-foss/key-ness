@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+#Ditemi che va
+
 class Document(models.Model):
         uploader = models.ForeignKey(User)
         description = models.TextField()
@@ -20,3 +22,4 @@ class DocumentComment(models.Model):
         author = models.ForeignKey(User)
         content = models.TextField()
         date = models.DateTimeField(auto_now=True)
+
