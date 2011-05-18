@@ -7,9 +7,11 @@
 <ul>
         {% for el in content %}
         <li>
-                <a href="{{ el.url }}" title="{{el.description}}">{{ el.name }}</a> - 
+                <a href="{{ el.url }}">{{ el.name }}</a>
+                {% if el.blog %}- 
                 <a href="#">{{el.blog}}</a>
                 <a href="#">{{el.rss}}</a>
+                {% endif %}
         </li>
         {% endfor %}
 
@@ -17,16 +19,5 @@
 {% endblock %}
 
 {% block content %}
-{% trans message %}
-<table>
-        {% for el in content %}
-        <tr>
-                <td width="200px"><a href="{{ el.url }}">{{ el.name }}</a></td>
-                <td width="300px"><span class="descr">{{el.description}}</span></td>
-                <td width="75px"><a href="#">{{el.blog}}</a></td>
-                <td width="20px"><a href="#">{{el.rss}}</a></td>
-        </tr>
-        {% endfor %}
 
-</table>
 {% endblock %}
