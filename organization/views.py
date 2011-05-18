@@ -50,8 +50,7 @@ def view_course(request, year, section, course):
 	res = [{ 
         "name":str(k), 
         'url':str(k.url()), 
-        'students':k.students.all().count(), 
-        'teachers':k.teachers.all().count(),
+        
     } for k in c.klasses.all()]
         return render_to_response('course.html', {
                 "content":res,
