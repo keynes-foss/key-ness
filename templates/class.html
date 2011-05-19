@@ -6,4 +6,19 @@
 {% endblock %}
 
 {% block content %}
+<h2> Students:</h2>
+<div>
+{% for student in students %}
+<span class="student"><a href="{{student.url}}">{{student.name}}</a></span>
+{% endfor %}
+</div>
+<h2> Teachers:</h2>
+<div>
+{% for teacher in teachers%}
+<span class="teacher">
+<a href="{{teacher.url}}">{{teacher.name}}</a> 
+({%for subject in teacher.subjects%}<span class="subject" style="background-color:#{{s.color}}"><a href="{{subject.url}}">{{subject.name}}</a></span>{%endfor%})</span>
+{% endfor %}
+</div>
+{% include "blog.html" %}
 {% endblock %}

@@ -1,19 +1,6 @@
-{% extends "index.html" %}
-{% load i18n %}
-{% block title %} - {{section}}{% endblock %}
-
-{% block style %}
-.descr{
-    text-align:justify;
-}
-{% endlblock %}
-
-{% block sidebar %}{% endlblock %}
-{% block content %}
-{% trans "Course List of the school" %}
 <div id="posts">
 {% for post in posts %}
-<div class="post" id="post-id">
+<div class="post" id="post-id" >
     <span class="post-title"></span>
     <div class="post-content"></div>
     <div class="post-data">
@@ -36,4 +23,3 @@
 </div>    
 {% endfor %}
 </div>
-{% endblock %}

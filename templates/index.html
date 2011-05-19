@@ -6,6 +6,8 @@
                 <style type="text/css">
                         body{
                                 font-family:verdana,arial,sans-serif;
+				font-size:small;
+
                         }
                         #title{
                                 width:100%;
@@ -58,6 +60,7 @@
                             margin-left:auto;
                             margin-right:auto;
                             width:800px;
+
                         }
                         {% block style %}{% endblock %}
                 </style>
@@ -74,14 +77,17 @@
                 </div>
                 <div id="content">
                         <div id="sidebar">
-                        {% trans message %}
+                        <div>{% trans message %}</div>
+			   {% for t,v in content.items %}
+				<span class="list-title">{{t}}</span>
                                 <ul>
-                                        {% for el in content %}
+                                        {% for el in v %}
                                         <li>
                                                 <a href="{{ el.url }}">{{ el.name }}</a>
                                         </li>
                                         {% endfor %}
                                 </ul>
+			   {% endfor %}
                         </div>
                         <div id="main">
                                 {% block content %}{% endblock %}

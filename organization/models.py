@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+
 class Year(models.Model):
 	name = models.TextField(unique=True)
 	def __unicode__(self):
@@ -8,7 +10,6 @@ class Year(models.Model):
 	@models.permalink
 	def url(self):
 		return ('year', (), {'year':self.name})# Create your models here.
-
 
 class SchoolSection(models.Model):
 	name = models.TextField()
@@ -28,10 +29,10 @@ class Project(models.Model):
 	name = models.TextField()
 	year = models.ForeignKey(Year, related_name = "alloc_projects")
 	def __unicode__(self):
-		return self.name + " (%s)" % self.year
+		return self.name 
 	@models.permalink
 	def url(self):
-		return ('project', (), {'year':self.year.name, "project":self.suffix})
+		return ('project', (), {'year':self.year.name, "project":str(self.id)})
 
 
 class Course(models.Model):
@@ -61,9 +62,13 @@ class StudentProfile(models.Model):
 	user = models.ForeignKey(User, related_name="student_profile", unique=True)
 	def __unicode__(self):
 		return self.user.username
+
+	def name(self):
+		return self.user.get_full_name() or self.user.username
 	@models.permalink
 	def url(self):
-		return ('year', (), {'year':self.name})# Create your models here.
+		return ('profile', (), {'username':self.user.username})
+
 
 ###########################################################################################################
 # M2M Reification
@@ -77,13 +82,14 @@ class StudentKlass(models.Model):
 	def __unicode__(self):
 		return "%s - %s in %s" % (str(self.student),str(self.klass), str(self.year), ) 
 
+
 class StudentProject(models.Model):
 	project = models.ForeignKey(Project, related_name = "students")	
 	student = models.ForeignKey(StudentProfile)
 	year = models.ForeignKey(Year)
 	def __unicode__(self):
 		return "%s - %s in %s" % (str(self.student),str(self.project ), str(self.year), ) 
-
+	
 
 class KlassProject(models.Model):
 	klass = models.ForeignKey(Klass, related_name = "projects")	
@@ -100,7 +106,7 @@ class Subject(models.Model):
 		return self.name
 	@models.permalink
 	def url(self):
-		return ('year', (), {'year':self.name})# Create your models here.
+		return ('subject', (), {'subject':self.name})# Create your models here.
 
 class TeacherProfile(models.Model):
 	user = models.ForeignKey(User, related_name="teacher_profile", unique=True)
@@ -109,7 +115,9 @@ class TeacherProfile(models.Model):
 		return self.user.username + " (%s)" % ",".join([str(a) for a in self.subject.all()])
 	@models.permalink
 	def url(self):
-		return ('year', (), {'year':self.name})# Create your models here.
+		return ('profile', (), {'username':self.user.username})
+	def name(self):
+		return self.user.get_full_name() or self.user.username
 
 ###########################################################################################################
 # M2M Reification
