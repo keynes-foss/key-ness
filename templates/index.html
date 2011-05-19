@@ -1,7 +1,7 @@
 {% load i18n %}
 <html>
         <head>
-                <title>ISI Keynes {% block title %}{% endblock %}</title>
+                <title>ISI Keynes {% if title %}- {{title}}{% endif %}</title>
                 <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold' rel='stylesheet' type='text/css'>
                 <style type="text/css">
                         body{
@@ -73,7 +73,16 @@
                         </div>
                 </div>
                 <div id="content">
-                        <div id="sidebar">{% block sidebar %}{% endblock %}</div>
+                        <div id="sidebar">
+                        {% trans message %}
+                                <ul>
+                                        {% for el in content %}
+                                        <li>
+                                                <a href="{{ el.url }}">{{ el.name }}</a>
+                                        </li>
+                                        {% endfor %}
+                                </ul>
+                        </div>
                         <div id="main">
                                 {% block content %}{% endblock %}
                         </div>

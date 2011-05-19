@@ -2,21 +2,6 @@
 {% load i18n %}
 {% block title %} - {{title}}{% endblock %}
 
-{% block sidebar %}
-{% trans message %}
-<ul>
-        {% for el in content %}
-        <li>
-                <a href="{{ el.url }}">{{ el.name }}</a>
-                {% if el.blog %}- 
-                <a href="#">{{el.blog}}</a>
-                <a href="#">{{el.rss}}</a>
-                {% endif %}
-        </li>
-        {% endfor %}
-
-</ul>
-{% endblock %}
 
 {% block content %}
 
