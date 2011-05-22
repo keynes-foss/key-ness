@@ -2,6 +2,9 @@ from django.http import HttpResponse
 from organization.models import *
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
+import settings
+
+
 try:
 	import json
 except:
@@ -9,10 +12,16 @@ except:
 
 def view_year(request, year):
 	y = Year.objects.get(name = year)
-	res = [{
+	res = {_("Schools"):[{
 		"name":str(s),
 		'url':str(s.url())
-	} for s in y.sections.all()]
+	} for s in y.sections.all()],
+		_("Projects"):[{
+		"name":str(s),
+		'url':str(s.url())
+	} for s in y.alloc_projects.all()]
+}
+	psts =  Year.posts.related(y)
 	return render_to_response('year.html', {
                 'content':res,
                 'breadcrumbs':[{
@@ -20,16 +29,19 @@ def view_year(request, year):
                         "url":str(y.url())
                 }],
                 'title':y.name,
-                "message":_("School sections available:")
+                "message":_("School Info:"),
+		'all_posts':psts ,
+		'school_name':settings.SCHOOL_NAME
         })
 
 def view_section(request, year, section):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
-	res = [{
+	res = {_("Courses"):[{
 		"name":str(c),
 		'url':str(c.url())
-	} for c in s.courses.all()]
+	} for c in s.courses.all()]}
+	psts =  Year.posts.related(s)
 	return render_to_response('year.html', {
                 'content':res,
                 'breadcrumbs':[{
@@ -40,18 +52,21 @@ def view_section(request, year, section):
                         "url":str(s.url())
                 }],
                 'title':s.name,
-                "message":_("Courses available in school Section:")
+                "message":_("Section info:"),
+		'all_posts':psts  ,
+		'school_name':settings.SCHOOL_NAME
         })
 
 def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
-	res = [{ 
+	res = {"asd":[{ 
         "name":str(k), 
         'url':str(k.url()), 
         
-    } for k in c.klasses.all()]
+    } for k in c.klasses.all()]}
+	psts =  Year.posts.related(c)
         return render_to_response('course.html', {
                 "content":res,
                 'breadcrumbs':[{
@@ -65,7 +80,9 @@ def view_course(request, year, section, course):
                         "url":str(c.url())
                 }],
                 'title':c.name,
-                "message":_("Course info available:")
+                "message":_("Course info:"),
+		'all_posts':psts  ,
+		'school_name':settings.SCHOOL_NAME
         })
 
 def view_klass(request, year,section, course, klass):
@@ -73,34 +90,84 @@ def view_klass(request, year,section, course, klass):
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
 	k = Klass.objects.get(course = c, name = klass)
-	res = []
+	psts =  Year.posts.related(k)
+	students = []
+	teachers = []
 	for q in k.students.all():
-		res.append({
-			'type':"student",
-			"name":str(q),
-			#'url':str(q.url()),
+		students.append({
+			"name":str(q.student.name()),
+			'url':str(q.student.url()),
 			} )
 	for q in k.teachers.all():
-		res.append({
-			'type':"teacher",
-			"name":str(q),
-			#'url':str(q.url()),
+		su = q.subject
+		teachers.append({
+			"name":str(q.teacher.name()),
+			'url':str(q.teacher.url()),
+			'subjects':[{"name":su.name, "color":su.color, "url":str(su.url())} ]
 			} )
 
+
+	psts =  Klass.posts.related(k)
+
 	return render_to_response('class.html', {
-                'breadcrumbs':[{
-                        "name":y.name,
-                        "url":str(y.url())
-                },{
-                        "name":s.name,
-                        "url":str(s.url())
-                },{
-                        "name":c.name,
-                        "url":str(c.url())
-                },{
-                        "name":k.name,
-                        "url":str(k.url())
-                }],
-                'title':k.name,
-                "message":_("Class info available:")
+		'breadcrumbs':[{
+              	"name":y.name,
+                     "url":str(y.url())
+		},{
+			"name":s.name,
+			"url":str(s.url())
+		},{
+			"name":c.name,
+			"url":str(c.url())
+		},{
+			"name":k.name,
+			"url":str(k.url())
+		}],
+		'title':str(k),
+		"message":_("Class info:"),
+		"students":students,
+		'teachers':teachers,
+		'all_posts':psts  ,
+		'school_name':settings.SCHOOL_NAME
         })
+
+def view_subject(request, subject):
+	pass
+
+
+def view_project(request, year,project):
+	y = Year.objects.get(name = year)
+	k = Project.objects.get(year = y, id = project)
+	students = []
+	teachers = []
+	for q in k.students.all():
+		students.append({
+			"name":str(q.student.name()),
+			#'url':str(q.student.url()),
+			} )
+	for q in k.teachers.all():
+		su = q.subject
+		teachers.append({
+			"name":str(q.teacher.name()),
+			#'url':str(q.teacher.url()),
+			'subjects':[{"name":su.name, "color":su.color, "url":str(su.url())} ]
+			} )
+	psts =  Klass.posts.related(k)
+	return render_to_response('class.html', {
+		'breadcrumbs':[{
+              	"name":y.name,
+                     "url":str(y.url())
+		},{
+			"name":k.name,
+			"url":str(k.url())
+		}],
+		'title':str(k),
+		"message":_("Project info:"),
+		"students":students,
+		'teachers':teachers,
+		'all_posts':psts  ,
+		'school_name':settings.SCHOOL_NAME
+        })
+
+def view_profile(request, username):
+	return render_to_response('profile.html', {})

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from organization.models import *
 
 #Ditemi che va
 
@@ -13,6 +14,8 @@ class Document(models.Model):
         protected = models.BooleanField(default = True)
         uploaded_at = models.DateTimeField(auto_now = True, editable = False)
         last_modified = models.DateTimeField(auto_now_save = True, editable = False)
+
+	tags = models.ManyToManyField(OrganizationTag)
 
         def __unicode__(self):
                 return self.filename

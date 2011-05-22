@@ -1,5 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from organization.models import OrganizationTag
+
+
+
 
 class Blog(models.Model):
         owner = models.ForeignKey(User)
@@ -19,13 +25,6 @@ class Post(models.Model):
                 return self.title
         
 class Comment(Post):
-        refers_to = models.ForeignKey(Post)
+        for_post = models.ForeignKey(Post, related_name="comments")
 
-class OrganizationTag(models.Model):
-        name = models.TextField()
-        refers_to=models.TextField()
-        
-        def __unicode__(self):
-                return self.name
-        def url(self):
-                return se
+

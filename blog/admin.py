@@ -4,3 +4,4 @@ from blog.models import *
 site.register(Blog)
 site.register(Post)
 site.register(Comment)
+

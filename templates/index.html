@@ -1,8 +1,9 @@
 {% load i18n %}
 <html>
         <head>
-                <title>ISI Keynes {% if title %}- {{title}}{% endif %}</title>
-                <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold' rel='stylesheet' type='text/css'>
+                <title>{{school_name}}{% if title %}- {{title}}{% endif %}</title>
+                <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold&text={{school_name}}' rel='stylesheet' type='text/css'>
+		  <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,500' rel='stylesheet' type='text/css'>
                 <style type="text/css">
                         body{
                                 font-family:verdana,arial,sans-serif;
@@ -62,11 +63,40 @@
                             width:800px;
 
                         }
+.side-block{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.list-title{				
+font-size:15px;
+font-family: 'Ubuntu',verdana,arial,sans-serif;
+}
+
+
+			.post{
+				display:block;
+				padding-bottom:20px;
+			}
+			.post-title{
+				font-size:30px;
+                                font-family: 'Ubuntu',verdana,arial,sans-serif;
+			}
+.post-content{
+padding-top:5px;
+}
+.post-data{
+padding-top:5px;
+}
+.post-time{
+font-size:x-small;
+}
+
+
                         {% block style %}{% endblock %}
                 </style>
         </head>
         <body>
-                <div id="title"><span class="title-text">ISI Keynes</span></div>
+                <div id="title"><span class="title-text">{{school_name}}</span></div>
                 <div id="breadcrumbs">
                         <div id="breadcrumbs-container">
                                 {% for breadcrumb in breadcrumbs %}
@@ -79,6 +109,7 @@
                         <div id="sidebar">
                         <div>{% trans message %}</div>
 			   {% for t,v in content.items %}
+				<div class="side-block">
 				<span class="list-title">{{t}}</span>
                                 <ul>
                                         {% for el in v %}
@@ -87,6 +118,8 @@
                                         </li>
                                         {% endfor %}
                                 </ul>
+				</span>
+				</div>
 			   {% endfor %}
                         </div>
                         <div id="main">
