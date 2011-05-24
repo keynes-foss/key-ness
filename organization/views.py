@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import *
 from organization.models import *
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
@@ -12,15 +12,16 @@ except:
 
 def view_year(request, year):
 	y = Year.objects.get(name = year)
-	res = {_("Schools"):[{
-		"name":str(s),
-		'url':str(s.url())
-	} for s in y.sections.all()],
+	res = {
+		_("Schools"):[{
+			"name":str(s),
+			'url':s.url()
+		} for s in y.sections.all()],
 		_("Projects"):[{
-		"name":str(s),
-		'url':str(s.url())
-	} for s in y.alloc_projects.all()]
-}
+			"name":str(s),
+			'url':s.url()
+		} for s in y.alloc_projects.all()]
+	}
 	psts =  Year.posts.related(y)
 	return render_to_response('year.html', {
                 'content':res,
@@ -31,7 +32,9 @@ def view_year(request, year):
                 'title':y.name,
                 "message":_("School Info:"),
 		'all_posts':psts ,
-		'school_name':settings.SCHOOL_NAME
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
         })
 
 def view_section(request, year, section):
@@ -54,20 +57,23 @@ def view_section(request, year, section):
                 'title':s.name,
                 "message":_("Section info:"),
 		'all_posts':psts  ,
-		'school_name':settings.SCHOOL_NAME
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
+
         })
 
 def view_course(request, year, section, course):
 	y = Year.objects.get(name = year)
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
-	res = {"asd":[{ 
+	res = {"Courses":[{ 
         "name":str(k), 
         'url':str(k.url()), 
         
     } for k in c.klasses.all()]}
 	psts =  Year.posts.related(c)
-        return render_to_response('course.html', {
+        return render_to_response('year.html', {
                 "content":res,
                 'breadcrumbs':[{
                         "name":y.name,
@@ -82,7 +88,10 @@ def view_course(request, year, section, course):
                 'title':c.name,
                 "message":_("Course info:"),
 		'all_posts':psts  ,
-		'school_name':settings.SCHOOL_NAME
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
+
         })
 
 def view_klass(request, year,section, course, klass):
@@ -128,11 +137,34 @@ def view_klass(request, year,section, course, klass):
 		"students":students,
 		'teachers':teachers,
 		'all_posts':psts  ,
-		'school_name':settings.SCHOOL_NAME
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
+
         })
 
 def view_subject(request, subject):
-	pass
+	c = Subject.objects.get(name=subject)
+	t = TeacherProfile.objects.filter(subject=c)
+	psts =  Subject.posts.related(c)
+        return render_to_response('subject.html', {
+                'breadcrumbs':[{
+                        "name":c.name,
+                        "url":str(c.url())
+                }],
+		'content':{
+			'Teachers':[
+			{'name':str(te),
+			'url': te.url()} for te in t]
+		},
+                'title':c.name,
+                "message":_("Subject:"),
+		'all_posts':psts  ,
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
+
+        })
 
 
 def view_project(request, year,project):
@@ -166,8 +198,19 @@ def view_project(request, year,project):
 		"students":students,
 		'teachers':teachers,
 		'all_posts':psts  ,
-		'school_name':settings.SCHOOL_NAME
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path
+
         })
 
 def view_profile(request, username):
 	return render_to_response('profile.html', {})
+
+def mainview(request):
+	import datetime
+	y = int(datetime.date.today().year)
+	ypo = y+1
+	url = Year.objects.filter(name__contains = str(y))[0].url()
+
+	return HttpResponseRedirect(url)

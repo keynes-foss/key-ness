@@ -20,7 +20,7 @@ class Post(models.Model):
         content = models.TextField()
         title = models.TextField()
         related_to = models.ManyToManyField(OrganizationTag)
-
+        date = models.DateTimeField(auto_now_add=True)
         def __unicode__(self):
                 return self.title
         

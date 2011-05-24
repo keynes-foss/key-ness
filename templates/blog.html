@@ -9,12 +9,12 @@
         <div class="post-time">{{post.time}}</div >
         <div class="post-tags">
 {%for tag in post.tags%}
-		<span class="post-tag"><a href="{{tag.url}}">{{tag.name}}</a></span>
+		<span class="post-tag {{tag.type}} {{tag.name}}"><a href="{{tag.url}}">{{tag.name}}</a></span>
 {%endfor%}
 	</div >
     </div>
     <div class="post-attachments"></div>
-    <div class="post-comments"
+    <div class="post-comments">
     {% for comment in post.comments %}
         <div class="comment" id="post-id-comment-id">
             <div class="comment-author"></div>

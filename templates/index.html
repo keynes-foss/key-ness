@@ -10,6 +10,13 @@
 				font-size:small;
 
                         }
+a {
+	color:blue;
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+	}
                         #title{
                                 width:100%;
                                 height:150px;
@@ -55,12 +62,19 @@
                             margin-right:0;
                             margin-top:4px;
                             margin-bottom:4px;
-                            height:25px;
                         }
                         #breadcrumbs-container{
                             margin-left:auto;
                             margin-right:auto;
                             width:800px;
+
+                        }
+
+ #toolbar{
+                            margin-left:auto;
+                            margin-right:auto;
+                            width:800px;
+				text-align:right;
 
                         }
 .side-block{
@@ -104,6 +118,16 @@ font-size:x-small;
                                 {% if not forloop.last %} > {% endif %}
                                 {% endfor %}
                         </div>
+			<div id="toolbar">
+				{%if not user_loggedin%}
+					<a href="/login">Login</a>
+				{%endif%} 
+				{%if user_loggedin %} 
+					<a href="/logout">Logout</a> | 
+					<a href="#" onclick="window.open('/posts/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Add Post" %}</a> | 
+					<a href="#" onclick="window.open('/docs/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Upload File" %}</a>
+				{%endif%}
+			</div>
                 </div>
                 <div id="content">
                         <div id="sidebar">
@@ -121,6 +145,8 @@ font-size:x-small;
 				</span>
 				</div>
 			   {% endfor %}
+			{% block sidebar %}{% endblock %}
+
                         </div>
                         <div id="main">
                                 {% block content %}{% endblock %}

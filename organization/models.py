@@ -49,11 +49,13 @@ class PostManager(models.Manager):
 					urls.append(klass.url())
 		elif type(item) is Klass:		
 			urls.append(item.url())
+		elif type(item) is Subject:		
+			urls.append(item.url())
 
 		print urls
 
 		t = OrganizationTag.objects.filter(refers_to__in = urls)
-		p = Post.objects.filter(related_to__in = t)
+		p = Post.objects.filter(related_to__in = t).distinct().order_by('date')
 		posts = []
 		for post in p:
 			a = {}
@@ -64,7 +66,8 @@ class PostManager(models.Manager):
 			for tag in post.related_to.all():
 				a['tags'].append({
 					'name':tag.name,
-					'url':tag.refers_to
+					'url':tag.refers_to,
+					'type':tag.type
 				})
 			
 			posts.append(a)
