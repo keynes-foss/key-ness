@@ -18,50 +18,69 @@ class OrganizationTag(models.Model):
 from blog.models import Post
 from blog.models import Comment
 
-class PostManager(models.Manager):
-	def related(self, item):
-		urls = []
-		if type(item) is Year:
-			print "year"
-			urls.append(item.url())
-			for section in item.sections.all():
-				urls.append(section.url())
-				for course in section.courses.all():
-					urls.append(course.url())
-					for klass in course.klasses.all():
-						urls.append(klass.url())
-			for project in item.alloc_projects.all():
-				urls.append(project.url())
+def url_for(user):
+	if TeacherProfile.objects.filter(user=user).count()==1:
+		return TeacherProfile.objects.get(user=user).url()
+	return StudentProfile.objects.get(user=user).url()
 
-		elif type(item) is SchoolSection:
-				urls.append(item.url())
-				for course in item.courses.all():
-					urls.append(course.url())
-					for klass in course.klasses.all():
-						urls.append(klass.url())
-
-		elif type(item) is Project:				
-			urls.append(item.url())
-
-		elif type(item) is Course:		
-				urls.append(item.url())
-				for klass in item.klasses.all():
+def related_urls(item): 
+	urls = []
+	if type(item) is Year:
+		print "year"
+		urls.append(item.url())
+		for section in item.sections.all():
+			urls.append(section.url())
+			for course in section.courses.all():
+				urls.append(course.url())
+				for klass in course.klasses.all():
 					urls.append(klass.url())
-		elif type(item) is Klass:		
-			urls.append(item.url())
-		elif type(item) is Subject:		
-			urls.append(item.url())
+		for project in item.alloc_projects.all():
+			urls.append(project.url())
 
-		print urls
+	elif type(item) is SchoolSection:
+		urls.append(item.url())
+		for course in item.courses.all():
+				urls.append(course.url())
+				for klass in course.klasses.all():
+					urls.append(klass.url())
+	elif type(item) is Project:				
+		urls.append(item.url())
+	elif type(item) is Course:		
+		urls.append(item.url())
+		for klass in item.klasses.all():
+			urls.append(klass.url())
+	elif type(item) is Klass:		
+		urls.append(item.url())
+	elif type(item) is Subject:		
+		urls.append(item.url())
 
+	elif type(item) in [TeacherProfile, StudentProfile]:		
+		urls.append(item.url())
+	return urls
+
+
+class PostManager(models.Manager):
+	def related(self, item, user, is_user=False):
+		urls = related_urls(item)
+		from django.db.models import Q
 		t = OrganizationTag.objects.filter(refers_to__in = urls)
-		p = Post.objects.filter(related_to__in = t).distinct().order_by('date')
+		if not is_user:
+			p = Post.objects.filter(related_to__in = t).distinct().order_by('-date')
+		else:	
+			p = Post.objects.filter(Q(related_to__in = t) | Q(author = item.user)).distinct().order_by('-date')
+
 		posts = []
 		for post in p:
 			a = {}
+			a['id'] = post.id
 			a['title'] = post.title
-			a['author'] = post.author.username
+			a['author'] = {
+				'name':post.author.username,
+				'url':url_for(post.author)
+			}
+			a['owner'] = user == post.author
 			a['content'] = post.content
+			a['url'] = post.url()
 			a['tags'] = []
 			for tag in post.related_to.all():
 				a['tags'].append({
@@ -69,9 +88,42 @@ class PostManager(models.Manager):
 					'url':tag.refers_to,
 					'type':tag.type
 				})
+				if tag.type=="subject":
+					a['type'] = tag.name
 			
 			posts.append(a)
-		return posts
+		
+		styles = {}
+		for post in posts:
+			for tag in post['tags']:
+				if tag['type'] == "subject":
+					styles[tag['name']]="#%s" % Subject.objects.get(name=tag['name']).color
+				
+		return posts, styles
+
+
+class DocsManager(models.Manager):
+	def related(self, item, user, is_user=False):
+		urls = related_urls(item)
+		from django.db.models import Q
+		t = OrganizationTag.objects.filter(refers_to__in = urls)
+		if not is_user:
+			p = Document.objects.filter(tags__in = t).distinct().order_by('-uploaded_at')
+		else:	
+			p = Document.objects.filter(Q(tags__in = t) | Q(author = item.user)).distinct().order_by('-uploaded_at')
+		docs = []
+
+		for doc in p :
+			if ((doc.uploader==user) or not doc.private):
+				a = {}
+				a['owner'] = user == doc.uploader 
+				a['name'] = doc.filename
+				a['filetype'] = doc.mime_type
+				a['url'] = doc.url()
+				docs.append(a)
+
+
+
 
 class Year(models.Model):
 	name = models.TextField(unique=True)
@@ -146,8 +198,25 @@ class Klass(models.Model):
 	def __unicode__(self):
 		return self.name+str(self.course)
 
-class StudentProfile(models.Model):
-	user = models.ForeignKey(User, related_name="student_profile", unique=True)
+class Profile(models.Model):
+	user = models.ForeignKey(User, unique=True)
+
+	def __unicode__(self):
+		return self.user.username
+	def representation(self):
+		return self.user.get_full_name()or self.user.username
+
+	def name(self):
+		return self.user.get_full_name() or self.user.username
+	@models.permalink
+	def url(self):
+		return ('profile', (), {'username':self.user.username})
+	
+	class Meta:
+		abstract=True
+
+
+class StudentProfile(Profile):
 	posts = PostManager()
 	objects = models.Manager()
 	def __unicode__(self):
@@ -203,20 +272,10 @@ class Subject(models.Model):
 	def url(self):
 		return ('subject', (), {'subject':self.name})# Create your models here.
 
-class TeacherProfile(models.Model):
-	user = models.ForeignKey(User, related_name="teacher_profile", unique=True)
+class TeacherProfile(Profile):
 	subject = models.ManyToManyField(Subject)
 	posts = PostManager()
 	objects = models.Manager()
-	def __unicode__(self):
-		return self.user.username + " (%s)" % ",".join([str(a) for a in self.subject.all()])
-	def representation(self):
-		return self.user.get_full_name()
-	@models.permalink
-	def url(self):
-		return ('profile', (), {'username':self.user.username})
-	def name(self):
-		return self.user.get_full_name() or self.user.username
 
 ###########################################################################################################
 # M2M Reification

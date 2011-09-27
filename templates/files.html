@@ -1,0 +1,12 @@
+{% load i18n %}
+{%if attachments%}
+<div class="post-attachments">
+<table>
+<tr><th> </th><th>{% trans "File Name" %}</th><th>{% trans "Description"%}</th><th>{% trans "Author"%}</th><th></tr>
+{% for file in attachments%}
+<tr><td><span class="icon {{}}"> </span></td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr>
+
+{% endfor %}
+</table>
+</div>
+{%endif%}

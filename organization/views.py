@@ -22,7 +22,7 @@ def view_year(request, year):
 			'url':s.url()
 		} for s in y.alloc_projects.all()]
 	}
-	psts =  Year.posts.related(y)
+	psts, styles =  Year.posts.related(y,request.user)
 	return render_to_response('year.html', {
                 'content':res,
                 'breadcrumbs':[{
@@ -34,7 +34,8 @@ def view_year(request, year):
 		'all_posts':psts ,
 		'school_name':settings.SCHOOL_NAME,
 	'user_loggedin':request.user.is_anonymous()==False,
-	'selfurl':request.path
+	'selfurl':request.path,
+	'styles':styles 
         })
 
 def view_section(request, year, section):
@@ -44,7 +45,7 @@ def view_section(request, year, section):
 		"name":str(c),
 		'url':str(c.url())
 	} for c in s.courses.all()]}
-	psts =  Year.posts.related(s)
+	psts, styles =  Year.posts.related(s,request.user)
 	return render_to_response('year.html', {
                 'content':res,
                 'breadcrumbs':[{
@@ -59,7 +60,8 @@ def view_section(request, year, section):
 		'all_posts':psts  ,
 		'school_name':settings.SCHOOL_NAME,
 	'user_loggedin':request.user.is_anonymous()==False,
-	'selfurl':request.path
+	'selfurl':request.path,
+	'styles':styles 
 
         })
 
@@ -72,7 +74,7 @@ def view_course(request, year, section, course):
         'url':str(k.url()), 
         
     } for k in c.klasses.all()]}
-	psts =  Year.posts.related(c)
+	psts, styles =  Year.posts.related(c,request.user)
         return render_to_response('year.html', {
                 "content":res,
                 'breadcrumbs':[{
@@ -90,7 +92,8 @@ def view_course(request, year, section, course):
 		'all_posts':psts  ,
 		'school_name':settings.SCHOOL_NAME,
 	'user_loggedin':request.user.is_anonymous()==False,
-	'selfurl':request.path
+	'selfurl':request.path,
+	'styles':styles 
 
         })
 
@@ -99,24 +102,23 @@ def view_klass(request, year,section, course, klass):
 	s = SchoolSection.objects.get(year = y, suffix = section)
 	c = Course.objects.get(section = s, name = course)
 	k = Klass.objects.get(course = c, name = klass)
-	psts =  Year.posts.related(k)
+	psts, styles =  Year.posts.related(k,request.user)
 	students = []
 	teachers = []
-	for q in k.students.all():
+	for q in StudentProfile.objects.filter(studentklass__klass=k).distinct():
 		students.append({
-			"name":str(q.student.name()),
-			'url':str(q.student.url()),
+			"name":str(q.name()),
+			'url':str(q.url()),
 			} )
-	for q in k.teachers.all():
-		su = q.subject
+	for q in TeacherProfile.objects.filter(teacherklass__klass=k).distinct():
 		teachers.append({
-			"name":str(q.teacher.name()),
-			'url':str(q.teacher.url()),
-			'subjects':[{"name":su.name, "color":su.color, "url":str(su.url())} ]
+			"name":str(q.name()),
+			'url':str(q.url()),
+			'subjects':[{"name":su.name, "color":su.color, "url":str(su.url())} for su in Subject.objects.filter(teacherklass__teacher = q)]
 			} )
 
 
-	psts =  Klass.posts.related(k)
+	psts, styles =  Klass.posts.related(k,request.user)
 
 	return render_to_response('class.html', {
 		'breadcrumbs':[{
@@ -139,14 +141,15 @@ def view_klass(request, year,section, course, klass):
 		'all_posts':psts  ,
 		'school_name':settings.SCHOOL_NAME,
 	'user_loggedin':request.user.is_anonymous()==False,
-	'selfurl':request.path
+	'selfurl':request.path,
+	'styles':styles 
 
         })
 
 def view_subject(request, subject):
 	c = Subject.objects.get(name=subject)
 	t = TeacherProfile.objects.filter(subject=c)
-	psts =  Subject.posts.related(c)
+	psts, styles =  Subject.posts.related(c,request.user)
         return render_to_response('subject.html', {
                 'breadcrumbs':[{
                         "name":c.name,
@@ -184,7 +187,7 @@ def view_project(request, year,project):
 			#'url':str(q.teacher.url()),
 			'subjects':[{"name":su.name, "color":su.color, "url":str(su.url())} ]
 			} )
-	psts =  Klass.posts.related(k)
+	psts, styles =  Klass.posts.related(k,request.user)
 	return render_to_response('class.html', {
 		'breadcrumbs':[{
               	"name":y.name,
@@ -200,12 +203,61 @@ def view_project(request, year,project):
 		'all_posts':psts  ,
 		'school_name':settings.SCHOOL_NAME,
 	'user_loggedin':request.user.is_anonymous()==False,
-	'selfurl':request.path
+	'selfurl':request.path,
+	'styles':styles 
 
         })
 
 def view_profile(request, username):
-	return render_to_response('profile.html', {})
+	u = User.objects.get(username = username)
+	import datetime
+	y = int(datetime.date.today().year)
+	y = Year.objects.filter(name__contains = str(y))[0]
+	if u == request.user:
+		#show private data 
+		pass
+	psts= []
+	nt = TeacherProfile.objects.filter(user=u).count()
+	ns = StudentProfile.objects.filter(user=u).count()
+
+	if nt==1:
+		tps = TeacherProfile.objects.get(user = u)
+	if ns==1:	
+		sps = StudentProfile.objects.get(user = u)
+
+	psts,styles = Klass.posts.related(tps,request.user,True)		
+
+	
+
+	return render_to_response('profile.html', {'content':{
+		"Classes":[
+			{'name':tk, "url":tk.url()}
+			for tk in Klass.objects.filter(teachers=TeacherKlass.objects.filter(year = y, teacher = tps))],
+		"Projects":[
+			{'name':tk, "url":tk.url()}
+			for tk in Project.objects.filter(teachers=TeacherProject.objects.filter(year = y, teacher = tps))],
+		"Subjects":[
+			{'name':sub, "url":sub.url()}
+			for sub in tps.subject.all()]
+	},'all_posts':psts  , 
+		'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'selfurl':request.path,
+	'styles':styles,
+	'profile_teacher':nt==1,
+	'profile_student':ns==1,
+	'name': u.get_full_name(),
+'breadcrumbs':[{
+              	"name":y.name,
+                     "url":str(y.url())
+		}]
+
+
+})
+
+
+
+
 
 def mainview(request):
 	import datetime

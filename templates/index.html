@@ -3,28 +3,33 @@
         <head>
                 <title>{{school_name}}{% if title %}- {{title}}{% endif %}</title>
                 <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold&text={{school_name}}' rel='stylesheet' type='text/css'>
-		  <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,500' rel='stylesheet' type='text/css'>
+                <link href='http://fonts.googleapis.com/css?family=Ubuntu:regular,500&text={{school_name}}' rel='stylesheet' type='text/css'>
+<link  href="http://fonts.googleapis.com/css?family=Lobster:regular&text={{school_name}}" rel="stylesheet" type="text/css" >
                 <style type="text/css">
                         body{
                                 font-family:verdana,arial,sans-serif;
-				font-size:small;
+                                font-size:small;
+					margin:0;
 
                         }
-a {
-	color:blue;
-	text-decoration:none;
-}
-a:hover{
-	text-decoration:underline;
-	}
+                        a {
+                                color:blue;
+                                text-decoration:none;
+                        }
+                        a:hover{
+                                text-decoration:underline;
+                        }
                         #title{
                                 width:100%;
                                 height:150px;
-                                font-family: 'Cabin Sketch',verdana,arial,sans-serif;
-                        }
+				    text-shadow: 3px 3px 8px #111;
+                                font-family: 'Lobster',verdana,arial,sans-serif;
+				color:#222;
+
+				                        }
                         .title-text{
                                 margin-left:150px;
-                                font-size:70px;
+                                font-size:100px;
                                 display:inline-block;
                         }
                         #content{
@@ -42,6 +47,7 @@ a:hover{
                                 text-align:center;
                         }
                         #sidebar{
+padding-top:15px;
                                 width:200px;
                                 display:block;
                                 float:left;
@@ -56,94 +62,118 @@ a:hover{
                                 clear: both;
                         }
                         #breadcrumbs{
-                            border-top: 1px solid #ccc;
-                            border-bottom: 1px solid #ccc;
-                            margin-left:0;
-                            margin-right:0;
-                            margin-top:4px;
-                            margin-bottom:4px;
+                                border-top: 1px solid #ccc;
+                                border-bottom: 1px solid #ccc;
+                                margin-left:0;
+                                margin-right:0;
+                                margin-top:4px;
+                                margin-bottom:4px;
                         }
                         #breadcrumbs-container{
-                            margin-left:auto;
-                            margin-right:auto;
-                            width:800px;
+                                float:left;
 
                         }
 
- #toolbar{
-                            margin-left:auto;
-                            margin-right:auto;
-                            width:800px;
-				text-align:right;
+                        #toolbar{
+                                float:right;
+                                text-align:right;
 
                         }
-.side-block{
-	padding-top:5px;
-	padding-bottom:5px;
-}
-.list-title{				
-font-size:15px;
-font-family: 'Ubuntu',verdana,arial,sans-serif;
-}
-
-
-			.post{
-				display:block;
-				padding-bottom:20px;
-			}
-			.post-title{
-				font-size:30px;
+                        .side-block{
+                                padding-top:5px;
+                                padding-bottom:5px;
+                        }
+                        .list-title{
+                                font-size:15px;
                                 font-family: 'Ubuntu',verdana,arial,sans-serif;
-			}
-.post-content{
-padding-top:5px;
-}
-.post-data{
-padding-top:5px;
-}
-.post-time{
-font-size:x-small;
-}
+                        }
 
 
+                        .post{
+                                display:block;
+                                padding-bottom:20px;
+                        }
+                        .post-title{
+                                font-size:30px;
+                                font-family: 'Ubuntu',verdana,arial,sans-serif;
+                        }
+                        .post-content{
+                                padding-top:5px;
+                        }
+                        .post-data{
+                                padding-top:5px;
+                        }
+                        .post-time{
+                                font-size:x-small;
+                        }
+
+                        .post-tag{
+                                padding-left:16px;
+                        }
+                        #top-container{
+                                width:800px;
+                                margin-left:auto;
+                                margin-right:auto;
+                        }
+
+                        #top-container-closer{
+                                clear:both;
+                        }
+
+                        {%for style,color in styles.items%}
+                        .post .{{style}}{
+                                border-bottom: 1px solid {{color}};
+                        }
+
+                        .post.{{style}}{
+                                border-left:3px dotted {{color}};
+				margin-left:-6px;
+				padding-left:3px;
+				display:block;
+                        }
+
+			
+                        {%endfor%}
                         {% block style %}{% endblock %}
                 </style>
         </head>
         <body>
                 <div id="title"><span class="title-text">{{school_name}}</span></div>
                 <div id="breadcrumbs">
-                        <div id="breadcrumbs-container">
-                                {% for breadcrumb in breadcrumbs %}
-                                <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
-                                {% if not forloop.last %} > {% endif %}
-                                {% endfor %}
-                        </div>
-			<div id="toolbar">
+                        <div id="top-container">
+                                <div id="breadcrumbs-container">
+                                        {% for breadcrumb in breadcrumbs %}
+                                        <span class="breadcrumb"><a href="{{breadcrumb.url}}">{{breadcrumb.name}}</a></span>
+                                        {% if not forloop.last %} > {% endif %}
+                                        {% endfor %}
+                                </div>
+                                <div id="toolbar">
 				{%if not user_loggedin%}
-					<a href="/login">Login</a>
-				{%endif%} 
-				{%if user_loggedin %} 
-					<a href="/logout">Logout</a> | 
-					<a href="#" onclick="window.open('/posts/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Add Post" %}</a> | 
-					<a href="#" onclick="window.open('/docs/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Upload File" %}</a>
+                                        <a href="/login">Login</a>
 				{%endif%}
-			</div>
+				{%if user_loggedin %}
+                                        <a href="/logout">Logout</a> |
+                                        <a href="#" onclick="window.open('/posts/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Add Post" %}</a> |
+                                        <a href="#" onclick="window.open('/docs/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Upload File" %}</a>
+				{%endif%}
+                                </div>
+                                <div id="top-container-closer"></div>
+                        </div>
                 </div>
                 <div id="content">
                         <div id="sidebar">
-                        <div>{% trans message %}</div>
+                                <div>{% trans message %}</div>
 			   {% for t,v in content.items %}
-				<div class="side-block">
-				<span class="list-title">{{t}}</span>
-                                <ul>
-                                        {% for el in v %}
-                                        <li>
-                                                <a href="{{ el.url }}">{{ el.name }}</a>
-                                        </li>
-                                        {% endfor %}
-                                </ul>
-				</span>
-				</div>
+                                <div class="side-block">
+                                        <span class="list-title">{{t}}</span>
+                                        <ul>
+                                                {% for el in v %}
+                                                <li>
+                                                        <a href="{{ el.url }}">{{ el.name }}</a>
+                                                </li>
+                                                {% endfor %}
+                                        </ul>
+                                </div>
 			   {% endfor %}
 			{% block sidebar %}{% endblock %}
 

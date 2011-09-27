@@ -2,7 +2,22 @@
 {% load i18n %}
 {% block title %} - {{title}}{% endblock %}
 
+{%block style%}
+.profile-title{
+                                font-size:45px;
+                                font-family: 'Ubuntu',verdana,arial,sans-serif;
+				padding-bottom:15px;
+				padding-top:15px;
+                        }
+.profile-title.teacher{
+	
+}
+.profile-title.teacher{
+	}
+
+{%endblock%}
 
 {% block content %}
+<div class="profile-title {%if profile_teacher%}teacher{%endif%} {%if profile_student%}student{%endif%}">{{name}}</div>
 {% include "blog.html" %}
 {% endblock %}

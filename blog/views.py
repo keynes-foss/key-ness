@@ -5,6 +5,21 @@ from django.http import *
 import settings
 from django.template import Context, Template, RequestContext
 
+def get_post(request, id):
+	return render_to_response('post.html', {'school_name':settings.SCHOOL_NAME,
+	'user_loggedin':request.user.is_anonymous()==False,
+	'all_posts':[{'title':post.title,
+			'author':post.author.username,
+			'content':post.content,
+			'url':post.url(),
+			'tags':[{
+					'name':tag.name,
+					'url':tag.refers_to,
+					'type':tag.type} for tag in post.related_to.all()]
+				
+			
+				} for post in Post.objects.filter(id=id)]})
+
 def add_post(request):
 	if request.method == 'POST': 
 		form = PostForm(request.POST) 
@@ -32,6 +47,7 @@ def add_post(request):
 	}, context_instance=RequestContext(request))
 
 def edit_post(request, id):
+	p = Post.objects.get(id=id)
 	if request.method == 'POST': # If the form has been submitted...
 		form = PostForm(request.POST) # A form bound to the POST data
 		if form.is_valid(): # All validation rules pass
