@@ -149,12 +149,12 @@ padding-top:15px;
                                 </div>
                                 <div id="toolbar">
 				{%if not user_loggedin%}
-                                        <a href="/login">Login</a>
+                                        <a href="{% url login %}">Login</a>
 				{%endif%}
 				{%if user_loggedin %}
-                                        <a href="/logout">Logout</a> |
-                                        <a href="#" onclick="window.open('/posts/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Add Post" %}</a> |
-                                        <a href="#" onclick="window.open('/docs/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Upload File" %}</a>
+                                        <a href="">Logout</a> |
+                                        <a href="#" onclick="window.open('{% url add_post %}?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Add Post" %}</a> |
+                                        <a href="#" onclick="window.open('/mm/docs/add?related_to={{selfurl}}','{% trans "Add Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Upload File" %}</a>
 				{%endif%}
                                 </div>
                                 <div id="top-container-closer"></div>

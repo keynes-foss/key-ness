@@ -21,9 +21,11 @@ class ImapBackend(object):
     # Create an authentication method
     # This is called by the standard Django login procedure
     def authenticate(self, username=None, password=None):
+	print "authenticating user", username
         try:
             # Check if this user is valid on the mail server
             c = IMAP4(mail_server)
+	    print "checking imap server ", str(c)
             c.login(username, password)
             c.logout()
         except:

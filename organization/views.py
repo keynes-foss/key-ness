@@ -3,7 +3,7 @@ from organization.models import *
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
 import settings
-
+from util import new_url
 
 try:
 	import json

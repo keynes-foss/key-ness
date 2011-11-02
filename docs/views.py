@@ -8,3 +8,7 @@ def get_file(request, file_id):
 
 def del_file(request, file_id):
 	pass
+
+
+def get_files(request, resource):
+	pass
