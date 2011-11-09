@@ -17,8 +17,8 @@
 
                         {% if post.owner %}
                         <div class="post-modders">
-                                <a href="#" onclick="window.open('/posts/edit/{{post.id}}','{% trans "Edit Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Edit Post" %}</a> |
-                                <a href="#" onclick="window.open('/posts/del/{{post.id}}','{% trans "Delete Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Delete Post" %}</a>
+                                <a href="#" onclick="window.open('posts/edit/{{post.id}}','{% trans "Edit Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Edit Post" %}</a> |
+                                <a href="#" onclick="window.open('posts/del/{{post.id}}','{% trans "Delete Post" %}','toolbar=no&scrollbars=no&status=no&location=no&menubar=no')"> {% trans "Delete Post" %}</a>
 
                         </div>
                         {% endif %}

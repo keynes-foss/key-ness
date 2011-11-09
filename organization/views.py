@@ -3,7 +3,6 @@ from organization.models import *
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
 import settings
-from util import new_url
 
 try:
 	import json
@@ -264,5 +263,5 @@ def mainview(request):
 	y = int(datetime.date.today().year)
 	ypo = y+1
 	url = Year.objects.filter(name__contains = str(y))[0].url()
-
-	return HttpResponseRedirect(url)
+	uurl = "org/2011-2012"
+	return HttpResponseRedirect(uurl)
